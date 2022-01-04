@@ -32,6 +32,8 @@ module Pod
 
     # Identifies the concrete strategy for the given options.
     #
+    # 确定options对应的具体下载策略
+    #
     # @param  [Hash{Symbol}] options
     #         The options for which a strategy is needed.
     #
@@ -46,7 +48,7 @@ module Pod
     end
 
     # @return [Downloader::Base] A concrete downloader according to the
-    #         options.
+    #         options. 返回一个具体的下载策略类，这可以理解为一个工厂方法
     #
     def self.for_target(target_path, options)
       options = options_to_sym(options)
