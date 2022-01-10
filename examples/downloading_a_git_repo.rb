@@ -11,7 +11,7 @@ require 'cocoapods-downloader'
 #
 
 target_path = File.expand_path('../../tmp/download', __FILE__)
-options = {:git => 'https://github.com/square/cocoapods-pack.git'}
+options = {:git => 'https://github.com/xuzhongping/cocoapods-downloader.git', :branch => 'read_note'}
 options = Pod::Downloader.preprocess_options(options)
 downloader = Pod::Downloader.for_target(target_path, options)
 downloader.download

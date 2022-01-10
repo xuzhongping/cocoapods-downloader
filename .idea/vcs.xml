@@ -4,5 +4,6 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/spec/fixtures/mercurial-repo" vcs="hg4idea" />
     <mapping directory="$PROJECT_DIR$/tmp/download" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tmp/download/spec/fixtures/mercurial-repo" vcs="hg4idea" />
   </component>
 </project>
