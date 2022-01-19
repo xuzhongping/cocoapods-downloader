@@ -58,6 +58,10 @@ module Pod
         match[1] unless match.nil?
       end
 
+      def self.ref_from_ls_remote(output, commit)
+        return nil unless commit
+      end
+
       private_class_method :commit_from_ls_remote
 
       private
@@ -132,6 +136,21 @@ module Pod
       def clone_arguments(force_head, shallow_clone)
         command = ['clone', url, target_path, '--template=']
 
+        unless force_head
+          output = Git.execute_command('git', ['ls-remote',
+                                               options[:git]])
+          ref = Git.ref_from_ls_remote(output, options[:commit])
+
+          if shallow_clone && ref
+            command += %w(--single-branch --depth 1)
+          end
+
+          if shallow_clone && ref.nil? && options[:branch] && options[:commit]
+            ref = options[:branch]
+            command += %w(--single-branch)
+          end
+        end
+
         if shallow_clone && !options[:commit]
           command += %w(--single-branch --depth 1)
         end
@@ -141,7 +160,6 @@ module Pod
             command += ['--branch', tag_or_branch]
           end
         end
-
         command
       end
 
