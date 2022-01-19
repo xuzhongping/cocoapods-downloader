@@ -21,6 +21,7 @@ module Pod
       end
 
       def self.preprocess_options(options)
+        verify_options(options)
         return options unless options[:branch]
 
         command = ['ls-remote',
@@ -96,6 +97,7 @@ module Pod
       #         possible given the specified {#options}.
       #
       def clone(force_head = false, shallow_clone = true)
+        Git.verify_options(options)
         ui_sub_action('Git download') do
           begin
             git! clone_arguments(force_head, shallow_clone)
@@ -152,6 +154,12 @@ module Pod
 
       def target_git(*args)
         git!(['-C', target_path] + args)
+      end
+
+      def self.verify_options(options)
+        if options[:tag] && options[:commit]
+          raise DownloaderError, "Not support ':tag' && ':commit'"
+        end
       end
     end
   end
