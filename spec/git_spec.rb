@@ -370,6 +370,12 @@ module Pod
           new_options = Downloader.preprocess_options(options)
           new_options[:commit].should.include '7ad3a6c'
         end
+
+        it 'resolves HEAD to a commit' do
+          options = { :git => fixture_url('git-repo') }
+          new_options = Downloader.preprocess_options(options)
+          new_options[:commit].should == '98cbf14201a78b56c6b7290f6cac840a7597a1c2'
+        end
       end
 
       describe ':commit_from_remote_ref' do
@@ -398,6 +404,24 @@ module Pod
           Git.send(:commit_from_remote_ref, fixture_url('git-repo'), nil).should.nil?
           Git.send(:commit_from_remote_ref, nil, nil).should.nil?
         end
+      end
+
+      describe ':commit_from_remote_head' do
+        it 'match a commit for remote HEAD' do
+          commit = Git.send(:commit_from_remote_head, fixture_url('git-repo'))
+          commit.should == '98cbf14201a78b56c6b7290f6cac840a7597a1c2'
+        end
+
+        it 'match a commit for invalid remote url' do
+          commit = Git.send(:commit_from_remote_head, 'I am invalid url')
+          commit.should.nil?
+        end
+
+        it 'handles nil inputs' do
+          commit = Git.send(:commit_from_remote_head, nil)
+          commit.should.nil?
+        end
+
       end
     end
   end

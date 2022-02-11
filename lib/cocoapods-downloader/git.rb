@@ -22,9 +22,11 @@ module Pod
 
       def self.preprocess_options(options)
         return options if options[:commit] || options[:tag]
-        return options unless options[:branch]
-
-        commit = commit_from_remote_ref(options[:git], options[:branch])
+        if branch = options[:branch]
+          commit = commit_from_remote_ref(options[:git], branch)
+        else
+          commit = commit_from_remote_head(options[:git])
+        end
         return options if commit.nil?
         options[:commit] = commit
         options
@@ -48,6 +50,14 @@ module Pod
         output = Git.execute_command('git', command)
         match = commit_from_ls_remote(output, ref)
         match
+      end
+
+      def self.commit_from_remote_head(url)
+        return nil if url.nil?
+        command = ['ls-remote', url, 'HEAD']
+        output = Git.execute_command('git', command)
+        match = %r{([a-z0-9]*)\tHEAD}.match(output)
+        match[1] unless match.nil?
       end
 
       # Matches a commit from the branches reported by git ls-remote.
